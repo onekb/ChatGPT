@@ -5,6 +5,17 @@ php实现调用ChatGPT，参考TS版本 [idootop/chatgpt-bot](https://github.com
 ![](./screenshots/conch.jpeg)
 ![](./screenshots/demo.png)
 
+# Installing
+
+```php
+composer require onekb/chat-gpt
+```
+
+# Usage
+```php
+    (new \Onekb\ChatGpt\ChatGpt($sessionToken, $authorization))->ask('你好');
+```
+
 # ⚡️ Getting Started
 
 **Step 1. 克隆本项目到本地**

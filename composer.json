@@ -14,5 +14,10 @@
     ],
     "require": {
         "guzzlehttp/guzzle": "^7.5"
-    }
+    },
+    "keywords": [
+        "ChatGpt",
+        "chatbot",
+        "chat-gpt"
+    ],
 }
