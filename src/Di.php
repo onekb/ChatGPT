@@ -11,10 +11,17 @@ class Di
         self::$container[$key] = $value;
     }
 
-    public static function get($key)
+    /**
+     * @param $key
+     * @param array $options 传递给构造函数的参数
+     *
+     * @return mixed
+     */
+    public static function get($key, $options = [])
     {
         if (! self::has($key)) {
-            self::set($key, new $key());
+            $class = new $key(...$options);
+            self::set($key, $class);
         }
 
         return self::$container[$key];

@@ -11,8 +11,15 @@ $authorization = '';
 $chatGpt = new ChatGpt($sessionToken, $authorization);
 
 do {
-    $input = readline('问问神奇海螺：');
+    $input = readline('🐚 问问神奇海螺：');
+    if (! $input) {
+        continue;
+    }
     echo "让我想想。\n";
-    $text = $chatGpt->ask($input);
-    echo $text . PHP_EOL . PHP_EOL;
+    try {
+        $text = $chatGpt->ask($input);
+    } catch (\Exception $e) {
+        $text = '可能是因为网络原因，请求中断，你可以再问一次。';
+    }
+    echo '🐚 ：' . $text . PHP_EOL . PHP_EOL;
 } while (true);

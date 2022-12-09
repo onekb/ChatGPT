@@ -2,6 +2,8 @@
 
 namespace Onekb\ChatGpt;
 
+use GuzzleHttp\Cookie\CookieJar;
+
 class ChatGpt
 {
     public $config = [];
@@ -13,12 +15,28 @@ class ChatGpt
 
     public function __construct($sessionToken, $authorization)
     {
-        $this->http = Di::get(Http::class);
-
         $this->config = [
             'sessionToken' => $sessionToken,
             'authorization' => $authorization,
         ];
+
+        if ($this->config['sessionToken']) {
+            /**
+             * @var \GuzzleHttp\Cookie\CookieJar $cookieJar
+             */
+            $cookieJar = Di::get(CookieJar::class);
+            $cookieJar->setCookie(
+                new \GuzzleHttp\Cookie\SetCookie([
+                    'Name' => '__Secure-next-auth.session-token',
+                    'Value' => $this->config['sessionToken'],
+                    'Domain' => 'chat.openai.com',
+                    'Path' => '/',
+                ])
+            );
+        }
+
+        $this->http = Di::get(Http::class);
+        $this->refreshToken();
     }
 
     public function refreshToken($force = false)
@@ -28,7 +46,9 @@ class ChatGpt
                 'GET',
                 'https://chat.openai.com/api/auth/session',
                 null,
-                $this->getHeaders()
+                [
+                    'headers' => $this->getHeaders(),
+                ]
             );
 
             // 查找 "set-cookie" 项
@@ -60,12 +80,12 @@ class ChatGpt
                 $newSessionToken = explode('; Path=/;', $newSessionToken)[0];
             }
             $this->config['sessionToken'] = $newSessionToken;
+            // 注意：这里只是把令牌保存到配置中，实际上并在 CookieJar 中获取，之后修改配置也不会同步到 CookieJar 中
         }
     }
 
     public function ask($parts)
     {
-        $this->refreshToken();
         $queryDatas = [
             'action' => 'next',
             'messages' => [
@@ -85,7 +105,9 @@ class ChatGpt
             'POST',
             'https://chat.openai.com/backend-api/conversation',
             $queryDatas,
-            $this->getHeaders()
+            [
+                'headers' => $this->getHeaders(),
+            ]
         );
 
         if ($response->getStatusCode() === 200) {
@@ -135,17 +157,7 @@ class ChatGpt
 
     protected function getHeaders()
     {
-        $cookies = [
-            '__Secure-next-auth.session-token' => $this->config['sessionToken'],
-        ];
-
         return [
-            'Cookie' => join(
-                ';',
-                array_map(function ($k, $v) {
-                    return $k . '=' . $v;
-                }, array_keys($cookies), $cookies)
-            ),
             'Authorization' => $this->config['authorization'],
         ];
     }
