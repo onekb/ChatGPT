@@ -39,6 +39,12 @@ class ChatGpt
         $this->refreshToken();
     }
 
+    public function setConversation($conversationID, $parentMessageID)
+    {
+        $this->config['conversationID'] = $conversationID;
+        $this->config['parentID'] = $parentMessageID;
+    }
+
     public function refreshToken($force = false)
     {
         if ($force || ! $this->config['sessionToken'] || ! $this->config['authorization']) {
@@ -84,7 +90,12 @@ class ChatGpt
         }
     }
 
-    public function ask($parts)
+    /**
+     * @param $parts
+     *
+     * @return array
+     */
+    public function ask($parts): array
     {
         $queryDatas = [
             'action' => 'next',
@@ -122,8 +133,14 @@ class ChatGpt
                 $this->config['conversationID'] = $conversationID;
             }
 
-            return $answer;
+            return [
+                'answer' => $answer,
+                'conversationID' => $conversationID,
+                'parentMessageId' => $parentID,
+            ];
         }
+
+        return [];
     }
 
     protected function getResponseData($data)
