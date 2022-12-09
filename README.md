@@ -12,8 +12,18 @@ composer require onekb/chat-gpt
 ```
 
 # Usage
+
 ```php
-    (new \Onekb\ChatGpt\ChatGpt($sessionToken, $authorization))->ask('你好');
+$chatGPT=new \Onekb\ChatGpt\ChatGpt($yourSessionToken, $yourAuthorization); // 二选一填写，获取方法见下方
+
+// 简单使用
+var_dump($chatGPT->ask('你好'));
+
+// 设置代理
+\Onekb\ChatGpt\Di::set('proxy', 'http://127.0.0.1:8899');
+
+// 设置谈话参数（继续会话）
+$chatGpt->setConversation($yourConversationID, $yourParentMessageID);
 ```
 
 # ⚡️ Getting Started
@@ -49,6 +59,20 @@ php start.php
 ```
 
 就酱，准备好起飞 🚀
+
+# 更新日志
+
+1.0.3 2022-12-09
+
+- cookie交给CookieJar维护
+- 优化Di管理方式
+- 返回谈话ID
+- 支持设置谈话参数（继续会话）
+- 支持设置代理
+
+1.0.1 2022-12-07
+
+- 初版
 
 # 其他
 
