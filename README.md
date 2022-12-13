@@ -14,7 +14,7 @@ composer require onekb/chat-gpt
 # Usage
 
 ```php
-$chatGPT=new \Onekb\ChatGpt\ChatGpt($yourSessionToken, $yourAuthorization); // 二选一填写，获取方法见下方
+$chatGPT=new \Onekb\ChatGpt\ChatGpt($yourSessionToken, $yourAuthorization, $userAgent, $cfClearance); // 前两者二选一填写，获取方法见下方。后两者必填。
 
 // 简单使用
 var_dump($chatGPT->ask('你好'));

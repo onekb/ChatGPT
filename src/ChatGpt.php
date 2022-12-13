@@ -13,18 +13,20 @@ class ChatGpt
      */
     protected $http = null;
 
-    public function __construct($sessionToken, $authorization)
+    public function __construct($sessionToken, $authorization, $userAgent, $cfClearance)
     {
         $this->config = [
             'sessionToken' => $sessionToken,
             'authorization' => $authorization,
+            'userAgent' => $userAgent,
+            'cfClearance' => $cfClearance,
         ];
 
+        $cookieJar = Di::get(CookieJar::class);
         if ($this->config['sessionToken']) {
             /**
              * @var \GuzzleHttp\Cookie\CookieJar $cookieJar
              */
-            $cookieJar = Di::get(CookieJar::class);
             $cookieJar->setCookie(
                 new \GuzzleHttp\Cookie\SetCookie([
                     'Name' => '__Secure-next-auth.session-token',
@@ -34,6 +36,16 @@ class ChatGpt
                 ])
             );
         }
+
+        // 设置cookie
+        $cookieJar->setCookie(
+            new \GuzzleHttp\Cookie\SetCookie([
+                'Name' => 'cf_clearance',
+                'Value' => $this->config['cfClearance'],
+                'Domain' => 'chat.openai.com',
+                'Path' => '/',
+            ])
+        );
 
         $this->http = Di::get(Http::class);
         $this->refreshToken();
@@ -176,6 +188,7 @@ class ChatGpt
     {
         return [
             'Authorization' => $this->config['authorization'],
+            'user-agent' => $this->config['userAgent'],
         ];
     }
 }
