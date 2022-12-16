@@ -12,6 +12,7 @@ $authorization = '';
 $cfClearance = '';// 有效期2小时，过期要换，在Cookie里可以获取
 $userAgent = '';// 就是你浏览器UA标识，在header里可以获取
 
+// 设置HTTP代理
 //\Onekb\ChatGpt\Di::set('proxy', 'http://127.0.0.1:8899');
 
 $chatGpt = new ChatGpt($sessionToken, $authorization, $userAgent, $cfClearance);

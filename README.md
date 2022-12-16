@@ -44,6 +44,10 @@ https://github.com/onekb/ChatGPT.git
 
 $sessionToken="Your-Authorization"
 $authorization="Your-SessionToken"
+
+// 过了cloudflare的验证后，填写这两者，都必填
+$cfClearance = 'Your-cfClearance';// 有效期2小时，过期要换，在Cookie里可以获取
+$userAgent = 'Your-userAgent';// 就是你浏览器UA标识，在header里可以获取
 ```
 
 **Step 3. Hello world!**
@@ -61,6 +65,9 @@ php start.php
 就酱，准备好起飞 🚀
 
 # 更新日志
+
+1.0.5 2022-12-13
+- 修复cloudflare拦截问题，需补全验证信息
 
 1.0.3 2022-12-09
 
