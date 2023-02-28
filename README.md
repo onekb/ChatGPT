@@ -29,7 +29,7 @@ $chatGpt->setConversation($yourConversationID, $yourParentMessageID);
 **Step 1. 克隆本项目到本地 Clone this project to local**
 
 ```bash
-https://github.com/onekb/ChatGPT.git
+git clone https://github.com/onekb/ChatGPT.git
 ```
 
 **Step 2. 配置你的环境变量 Configure your environment variables**
@@ -38,9 +38,9 @@ https://github.com/onekb/ChatGPT.git
 
 First, replace the `$authorization` field in the `start.php` file with your own OpenAI account parameters
 
-> 你可以在这里找到参数值 👉 [教程](#其他)
+> 你可以在这里找到参数值 👉 [教程](#其他other)
 
-> You can find parameter values here 👉 [tutorial](#其他)
+> You can find parameter values here 👉 [tutorial](#其他other)
 
 **Step 3. 配置api反向代理 Configure api reverse proxy**
 
@@ -101,7 +101,7 @@ full stop, ready to take off 🚀
 
 - 初版
 
-# 其他 other
+# 其他other
 
 要使用“ChatGPTUnofficialProxyAPI”，您需要来自 ChatGPT 网络应用程序的 OpenAI 访问令牌。 您可以：
 
