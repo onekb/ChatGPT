@@ -1,7 +1,5 @@
 # onekb/ChatGPT
 
-php实现调用ChatGPT，参考TS版本 [idootop/chatgpt-bot](https://github.com/idootop/chatgpt-bot) 编写，感谢作者。部分代码由 ChatGPT 转译。
-
 ![](./screenshots/conch.jpeg)
 ![](./screenshots/demo.png)
 
@@ -28,31 +26,46 @@ $chatGpt->setConversation($yourConversationID, $yourParentMessageID);
 
 # ⚡️ Getting Started
 
-**Step 1. 克隆本项目到本地**
+**Step 1. 克隆本项目到本地 Clone this project to local**
 
 ```bash
 https://github.com/onekb/ChatGPT.git
 ```
 
-**Step 2. 配置你的环境变量**
+**Step 2. 配置你的环境变量 Configure your environment variables**
 
-首先，将 `start.php` 文件中的 `$sessionToken` and `$authorization` 字段替换成你自己的 OpenAI 账号参数
-> 你可以在这里找到这两个参数值 👉 [教程](#其他)
+首先，将 `start.php` 文件中的 `$authorization` 字段替换成你自己的 OpenAI 账号参数
+
+First, replace the `$authorization` field in the `start.php` file with your own OpenAI account parameters
+
+> 你可以在这里找到参数值 👉 [教程](#其他)
+
+> You can find parameter values here 👉 [tutorial](#其他)
+
+**Step 3. 配置api反向代理 Configure api reverse proxy**
+
+社区成员运行的已知反向代理包括：
+
+Known reverse proxies run by community members include:
+
+| Reverse Proxy URL                                | Author                                       | Rate Limits      | Last Checked |
+| ------------------------------------------------ | -------------------------------------------- | ---------------- | ------------ |
+| `https://chat.duti.tech/api/conversation`        | [@acheong08](https://github.com/acheong08)   | 120 req/min by IP | 2/19/2023    |
+| `https://gpt.pawan.krd/backend-api/conversation` | [@PawanOsman](https://github.com/PawanOsman) | ?                | 2/19/2023    |
 
 ```php
 # start.php
 
-$sessionToken="Your-Authorization"
 $authorization="Your-SessionToken"
 
-// 过了cloudflare的验证后，填写这两者，都必填
-$cfClearance = 'Your-cfClearance';// 有效期2小时，过期要换，在Cookie里可以获取
-$userAgent = 'Your-userAgent';// 就是你浏览器UA标识，在header里可以获取
+$apiReverseProxyUrl = 'https://gpt.pawan.krd/backend-api/conversation';
 ```
 
 **Step 3. Hello world!**
 
-首先，你的电脑必须有 PHP 环境，然后在项目根目录下执行以下命令
+最后，你的电脑必须有 PHP 环境，然后在项目根目录下执行以下命令
+
+Finally, your computer must have a PHP environment, and then execute the following command in the project root directory
 
 ```bash
 composer install --no-dev
@@ -64,7 +77,14 @@ php start.php
 
 就酱，准备好起飞 🚀
 
+full stop, ready to take off 🚀
+
 # 更新日志
+
+2.0.0 2023-02-28
+- 重构代码
+- 变更获取方式
+- 英文readme
 
 1.0.5 2022-12-13
 - 修复cloudflare拦截问题，需补全验证信息
@@ -81,27 +101,20 @@ php start.php
 
 - 初版
 
-# 其他
+# 其他 other
 
-**How to get the `kAuthorization` and `kSessionToken`?**
+要使用“ChatGPTUnofficialProxyAPI”，您需要来自 ChatGPT 网络应用程序的 OpenAI 访问令牌。 您可以：
 
-首先，在你的电脑浏览器上登录 [OpenAI](https://chat.openai.com/chat)
+To use `ChatGPTUnofficialProxyAPI`, you'll need an OpenAI access token from the ChatGPT webapp. You can either:
 
-> OpenAI 账号注册教程 👉 [请戳这里](https://juejin.cn/post/7173447848292253704)
+1.使用 [acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth)，这是一个 python 脚本来自动登录并获取访问令牌。 这适用于电子邮件 + 密码帐户（例如，它不支持您通过 Microsoft / Google 授权的帐户）。
 
-![](./screenshots/logined.png)
+1.Use [acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth), which is a python script to login and get an access token automatically. This works with email + password accounts (e.g., it does not support accounts where you auth via Microsoft / Google).
 
-登录成功之后，按 `F12` 快捷键，打开浏览器开发者面板
+2.您可以通过登录 ChatGPT webapp 然后打开 https://chat.openai.com/api/auth/session 来手动获取 `accessToken`，这将返回一个包含您的 `accessToken` 字符串的 JSON 对象 .
 
-![](./screenshots/auth.png)
+2.You can manually get an `accessToken` by logging in to the ChatGPT webapp and then opening `https://chat.openai.com/api/auth/session`, which will return a JSON object containing your `accessToken` string.
 
-在开发者面板中找到并打开 `网络` 这一栏，然后给 ChatGPT 随便发条消息。 这时候开发者面板里能够看到有许多网络请求，随便选择一个，然后从请求头中找到 `Authorization`，将它的值复制替换掉 `start.php`
-里的 `kAuthorization`。
+访问令牌持续约 8 小时。
 
-![](./screenshots/session.png)
-
-最后，打开 `存储` 这一栏，然后找到名为 `__Secure-next-auth.session-token` 的 Cookie，复制它的值替换掉 `kSessionToken` 即可
-
-以上。
-
-> *PS: `kAuthorization` 和 `kSessionToken` 二选一即可，然后在 `start.php` 里删掉另一个的值*
+Access tokens last for ~8 hours.

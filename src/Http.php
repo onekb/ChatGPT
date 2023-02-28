@@ -12,11 +12,7 @@ class Http
         /**
          * @var Client $client
          */
-        $client = Di::get(Client::class, [
-            [
-                'cookies' => Di::get(CookieJar::class),
-            ],
-        ]);
+        $client = Di::get(Client::class);
 
         $data && $options['json'] = $data;
 
@@ -28,5 +24,4 @@ class Http
 
         return $client->request($method, $url, $options);
     }
-
 }
