@@ -1,5 +1,6 @@
 {
     "name": "onekb/chat-gpt",
+    "description": "ChatGPT for PHP，和简易终端实现。NOT GPT-3",
     "license": "MIT",
     "autoload": {
         "psr-4": {
