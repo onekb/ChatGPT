@@ -1,9 +1,9 @@
 # onekb/ChatGPT
 
 # 2023-03-02特别说明 Special Note
-__目前OpenAI已经开放GPT3.5模型API[参考](https://platform.openai.com/docs/guides/chat)，那么本项目可能也走向终结，没有维护的必要了。在新时代变革的黎明，祝大家一帆风顺。🇨🇳__
+__目前OpenAI已经开放GPT3.5模型API[（参考）](https://platform.openai.com/docs/guides/chat)，那么本项目可能也走向终结，没有维护的必要了。在新时代变革的黎明，祝大家一帆风顺。🇨🇳__
 
-__At present, OpenAI has opened the GPT3.5 model API [reference] (https://platform.openai.com/docs/guides/chat), then this project may also come to an end, and there is no need for maintenance. At the dawn of change in the new era, I wish you all the best of luck.__
+__At present, OpenAI has opened the GPT3.5 model API [(reference)](https://platform.openai.com/docs/guides/chat), then this project may also come to an end, and there is no need for maintenance. At the dawn of change in the new era, I wish you all the best of luck.__
 
 # 原文
 
