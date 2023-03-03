@@ -1,6 +1,6 @@
 {
     "name": "onekb/chat-gpt",
-    "description": "ChatGPT for PHP，和简易终端实现。NOT GPT-3",
+    "description": "ChatGPT for PHP，和简易终端实现。Using OpenAI GPT3.5 model API.",
     "license": "MIT",
     "autoload": {
         "psr-4": {
