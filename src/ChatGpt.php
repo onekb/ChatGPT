@@ -2,119 +2,86 @@
 
 namespace Onekb\ChatGpt;
 
-use GuzzleHttp\Cookie\CookieJar;
-
 class ChatGpt
 {
     public $config = [];
+
+    // 聊天记录 Chat history
+    public $history = [];
 
     /**
      * @var Http
      */
     protected $http = null;
 
-    public function __construct($authorization, $apiReverseProxyUrl)
+    public function __construct($apiKey, $limit)
     {
         $this->config = [
-            'authorization' => $authorization,
-            'apiReverseProxyUrl' => $apiReverseProxyUrl,
+            'apiKey' => $apiKey,
+            'limit' => $limit,
         ];
 
         $this->http = Di::get(Http::class);
     }
 
-    public function setConversation($conversationID, $parentMessageID)
-    {
-        $this->config['conversationID'] = $conversationID;
-        $this->config['parentID'] = $parentMessageID;
-    }
-
     /**
-     * @param $parts
+     * @param string $content
      *
      * @return array
      */
-    public function ask($parts): array
+    public function ask(string $content): array
     {
-        $queryDatas = [
-            'action' => 'next',
-            'messages' => [
-                [
-                    'id' => $this->uuidv4(),
-                    'role' => 'user',
-                    'content' => ['content_type' => 'text', 'parts' => [$parts]],
-                ],
-            ],
-            'parent_message_id' => $this->config['parentID'] ?? $this->uuidv4(),
-            'model' => $this->config['model'] ?? 'text-davinci-002-render',
+        $this->history[] = [
+            'role' => 'user',
+            'content' => $content,
         ];
-        isset($this->config['conversationID'])
-        && $queryDatas['conversation_id'] = $this->config['conversationID'];
 
-        $response = $this->http->request(
-            'POST',
-            $this->config['apiReverseProxyUrl'],
-            $queryDatas, // Real body 'https://chat.openai.com/backend-api/conversation'
-            [
-                'headers' => $this->getHeaders(),
-            ]
-        );
-
-        if ($response->getStatusCode() === 200) {
-            $datas = $this->getResponseData($response->getBody()->getContents());
-            $parentID = $datas['message']['id'];
-            $conversationID = $datas['conversation_id'];
-            $answer = $datas['message']['content']['parts'][0];
-            if ($parentID) {
-                $this->config['parentID'] = $parentID;
-            }
-            if ($conversationID) {
-                $this->config['conversationID'] = $conversationID;
-            }
-
-            return [
-                'answer' => $answer,
-                'conversationID' => $conversationID,
-                'parentMessageId' => $parentID,
-            ];
+        $data = $this->gpt3_5Turbo($this->history);
+        if (isset($data['choices'][0]['message'])) {
+            $this->addHistory(
+                $data['choices'][0]['message']['role'],
+                trim($data['choices'][0]['message']['content'])
+            );
         }
 
-        return [];
+        return $data;
     }
 
-    protected function getResponseData($data)
+    public function addHistory(string $role, string $content)
     {
-        $temp = explode("\n\n", $data);
-        try {
-            if (count($temp) > 4) {
-                $dataStr = str_replace('data: ', '', $temp[count($temp) - 5]);
-
-                return json_decode($dataStr, true);
-            }
-        } catch (Exception $e) {
-            return null;
+        $this->history[] = [
+            'role' => $role,
+            'content' => $content,
+        ];
+        // 去除多余的历史记录
+        if (count($this->history) > $this->config['limit'] && $this->config['limit'] > 0) {
+            array_shift($this->history);
         }
     }
 
-    protected function uuidv4()
+    public function clearHistory()
     {
-        return sprintf(
-            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff)
+        $this->history = [];
+    }
+
+    public function gpt3_5Turbo(array $message): array
+    {
+        return json_decode(
+            $this->http->request('POST', 'https://api.openai.com/v1/chat/completions', [
+                'model' => 'gpt-3.5-turbo',
+                'messages' => $message,
+            ], [
+                    'headers' => $this->getHeaders(),
+                ]
+            )->getBody()->getContents(),
+            true
         );
     }
 
     protected function getHeaders()
     {
         return [
-            'Authorization' => $this->config['authorization'],
+            'Authorization' => 'Bearer ' . $this->config['apiKey'],
         ];
     }
 }

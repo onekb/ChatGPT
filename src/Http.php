@@ -3,7 +3,6 @@
 namespace Onekb\ChatGpt;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
 
 class Http
 {
