@@ -94,7 +94,6 @@ END;
        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
        $result = curl_exec($ch);
-       echo $result;
        curl_close($ch);
        $ret = json_decode($result, true);
        return $ret;
