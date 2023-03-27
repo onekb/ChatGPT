@@ -12,6 +12,7 @@ $limit = 2;
 
 // 设置HTTP代理（选填） Set HTTP proxy (optional)
 //\Onekb\ChatGpt\Di::set('proxy', 'http://127.0.0.1:1087');
+$history = [];
 
 header("Content-Type:text/html;charset=utf-8");
 // 自定义聊天记录 Custom chat history
@@ -38,19 +39,39 @@ if ($act == 'question') {
 	    $ret = 1;
 	    echo $e;
     }
+    //array_push($history, $input => $text);
+    $history = $history + [$input => $text];
+    foreach(json_decode($_POST['history'], true) as $i => $t) {
+        $history = $history + [$i => $t];
+    };
+    $value = json_encode($history);
     echo <<<END
 <form action="gpt.php" method="POST">
 <form>
 问题：
 <input type="text" name="question">
+<input type="hidden" name="history" value='$value' >
+<input type="submit" value="提问">
+</form>
+END;
+foreach($history as $i =>$t) {
+  echo "问：".$i;
+  echo "<br>";
+  echo "答：".$t;
+  echo "<br>";
+}
+} else {
+    echo <<<END
+<form action="gpt.php" method="POST">
+<form>
+问题：
+<input type="text" name="question">
+<input type="hidden" name="history">
 <input type="submit" value="提问"> </form>
-问：$input
 <br>
-答：$text
+}
 <br>
 END;
-} else {
-    echo 'act'.$act.'act';
 }
 
     /**
