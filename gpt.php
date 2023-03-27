@@ -34,8 +34,9 @@ $input = $_POST['question'];
 if ($act == 'question') {
     try {
         $result = ask($input);
+        $text = $result['choices'][0]['message']['content'];
 	    $ret = 0;
-	    echo $result;
+	    echo $text;
     } catch (\Exception $e) {
         $text = '可能是因为网络原因或速率限制，请求中断，你可以再问一次。'; // It may be due to network reasons or rate limiting, the request is interrupted, you can ask again.
 	    $ret = 1;
@@ -141,7 +142,7 @@ END;
 
        $result = curl_exec($ch);
        curl_close($ch);
-       return $result;
-
+       $ret = json_decode($result, true);
+       return $ret;
     }
 ?>
