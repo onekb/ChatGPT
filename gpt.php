@@ -34,21 +34,13 @@ $input = $_POST['question'];
 if ($act == 'question') {
     try {
         $result = ask($input);
-        $text = $result['choices'][0]['message']['content'];
-	$ret = 0;
+	    $ret = 0;
+	    echo $result;
     } catch (\Exception $e) {
         $text = '可能是因为网络原因或速率限制，请求中断，你可以再问一次。'; // It may be due to network reasons or rate limiting, the request is interrupted, you can ask again.
-	$ret = 1;
-	echo $e;
+	    $ret = 1;
+	    echo $e;
     }
-    // 重新发起对话 Reinitiate a conversation
-    // $chatGpt->clearHistory();
-    echo '🐚 ：' . $ret. $text . PHP_EOL . PHP_EOL;
-	$updateObj = new \stdClass();
-    	$updateObj->result= $ret;;
-    	$updateObj->text= $text;
-        $updateJson = json_encode($updateObj);
-        echo $updateJson;
 } else if ($act == 'adsf'){
     echo <<<END
 <form action="index.php" method="POST">
@@ -56,8 +48,7 @@ if ($act == 'question') {
 问题：<br>
 <input type="text" name="firstname">
 <br>
-<input type="submit" value="提问">
-</form>
+<input type="submit" value="提问"> </form>
 END;
 } else {
     echo 'act'.$act.'act';

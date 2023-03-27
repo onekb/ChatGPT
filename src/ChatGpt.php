@@ -24,28 +24,6 @@ class ChatGpt
         $this->http = Di::get(Http::class);
     }
 
-    /**
-     * @param string $content
-     *
-     * @return array
-     */
-    public function ask(string $content): array
-    {
-        $this->history[] = [
-            'role' => 'user',
-            'content' => $content,
-        ];
-
-        $data = $this->gpt3_5Turbo($this->history);
-        if (isset($data['choices'][0]['message'])) {
-            $this->addHistory(
-                $data['choices'][0]['message']['role'],
-                trim($data['choices'][0]['message']['content'])
-            );
-        }
-
-        return $data;
-    }
 
     public function addHistory(string $role, string $content)
     {
