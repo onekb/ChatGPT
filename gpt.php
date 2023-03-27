@@ -3,9 +3,6 @@
 //require 'vendor/autoload.php';
 //use GuzzleHttp\Client;
 
-// 你的key
-// your key
-$apiKey = 'jjj';
 
 // 最大提交聊天记录数，内容太多会消耗更多tokens
 // The maximum number of submitted chat records, too much content will consume more tokens
@@ -43,12 +40,14 @@ if ($act == 'question') {
     }
     echo <<<END
 <form action="gpt.php" method="POST">
-$text
-<br>
 <form>
 问题：
 <input type="text" name="question">
 <input type="submit" value="提问"> </form>
+问：$input
+<br>
+答：$text
+<br>
 END;
 } else {
     echo 'act'.$act.'act';
@@ -66,63 +65,18 @@ END;
             'content' => $content,
         );
 
-        //$data = gpt3_5Turbo($history);
-        //$data = gpt35($history);
         $data = gpt35Curl($history);
-        /*
-        if (isset($data['choices'][0]['message'])) {
-            $this->addHistory(
-                $data['choices'][0]['message']['role'],
-                trim($data['choices'][0]['message']['content'])
-            );
-        }*/
-
         return $data;
     }
 
-    function gpt3_5Turbo(array $message)
-    {
-        $http= new GuzzleHttp\Client();
-        return json_decode(
-            $http->request('POST', 'https://api.openai.com/v1/chat/completions', array(
-                'model' => 'gpt-3.5-turbo',
-                'messages' => $message,
-            ), array(
-                    'headers' => $this->getHeaders(),
-                )
-            )->getBody()->getContents(),
-            true
-        );
-    }
-    function gpt35(array $message, $json=true) {
-        $url = 'https://api.openai.com/v1/chat/completions';
-        $data = array('model' => 'gpt-3.5-turbo', 'messages' => $message);
-        if($json){
-            $str = 'application/json';
-            $data = json_encode($data);
-        }else{
-            $str = 'application/x-www-form-urlencoded';
-            $data = http_build_query($data);
-        }
-        $header = [
-            'header'  => "Content-Type: $str",
-            'Authorization' => 'Bearer ' . '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',
-        ];
-        $options[ 'http' ] = array(
-            'timeout' => 10,
-            'method'  => 'POST',
-            'header'  => $header,
-            'content' => $data,
-        );
-        $context = stream_context_create($options);
-        return file_get_contents($url, false, $context);
-    }
 
     function gpt35Curl(array $message, $json=true) {
        $url = "https://api.openai.com/v1/chat/completions";
        $headers = array(
            'Content-Type: application/json',
-           'Authorization: Bearer '.'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',
+           'Authorization: Bearer '.'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',
+           //'Authorization: Bearer '.'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',
+           //'Authorization: Bearer '.'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',
        );
 
        $data = array(
@@ -140,6 +94,7 @@ END;
        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
        $result = curl_exec($ch);
+       echo $result;
        curl_close($ch);
        $ret = json_decode($result, true);
        return $ret;
